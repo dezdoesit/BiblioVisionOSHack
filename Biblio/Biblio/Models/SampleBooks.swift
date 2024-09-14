@@ -13,7 +13,8 @@ extension ContentView {
             "sample1.pdf",
             "sample2.epub",
             "sample3.pdf",
-            "sample4.epub"
+            "sample4.epub",
+            "sample5.pdf"
         ]
 
         for fileName in sampleFiles {
