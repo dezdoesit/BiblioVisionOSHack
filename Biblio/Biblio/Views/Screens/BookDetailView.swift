@@ -1,62 +1,29 @@
 import SwiftUI
+import WebKit
 import PDFKit
 import QuickLook
-
+import EPUBKit
 import SwiftUI
 import PDFKit
 
 struct DocumentDetailView: View {
     let book: Book
-    @State private var pdfView: PDFView?
 
     var body: some View {
         VStack {
-            if book.type == "PDF" {
+            switch book.type {
+            case .pdf:
                 PDFKitView(book: book)
-
-            } else {
+            case .epub:
+                EPUBKitView(url: book.fileURL)
+            case .other(_):
                 Text("Unsupported file type")
             }
         }
     }
 }
 
-
-struct PDFKitView: UIViewRepresentable {
-    let book: Book
-
-    func makeUIView(context: Context) -> PDFView {
-        let pdfView = PDFView()
-        if let url = book.fileURL {
-            pdfView.document = PDFDocument(url: url)
-        }
-        pdfView.displayMode = .singlePageContinuous
-        pdfView.autoScales = true
-        pdfView.delegate = context.coordinator
-
-        // Enable text selection
-        pdfView.isUserInteractionEnabled = true
-
-        return pdfView
-    }
-
-    func updateUIView(_ uiView: PDFView, context: Context) {}
-
-    func makeCoordinator() -> Coordinator {
-        Coordinator(self)
-    }
-
-    class Coordinator: NSObject, PDFViewDelegate {
-        var parent: PDFKitView
-
-        init(_ parent: PDFKitView) {
-            self.parent = parent
-        }
-
-    }
-}
-
-
+//MARK: NOT sure what this is meant for
 struct QuickLookPreview: UIViewControllerRepresentable {
     let book: Book
 
@@ -91,3 +58,4 @@ struct QuickLookPreview: UIViewControllerRepresentable {
         }
     }
 }
+

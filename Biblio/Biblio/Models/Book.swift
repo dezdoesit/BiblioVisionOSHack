@@ -22,8 +22,8 @@ struct Book: Identifiable {
         fileURL?.lastPathComponent ?? "Unknown"
     }
 
-    var type: String {
-        fileURL?.pathExtension.uppercased() ?? "Unknown"
+    var type: BookType {
+        BookType(pathExtension: fileURL?.pathExtension ?? "unknown")
     }
 
     var size: String {
