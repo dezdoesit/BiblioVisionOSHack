@@ -17,12 +17,12 @@ class RAGViewModel: ObservableObject {
         self.openAISerivce = .init()
     }
     
-    func addNewPage(content page: String) {
-        langaugeService.processBook(page)
+    func addNewPage(content page: String, pageIndex: Int) {
+        langaugeService.processPage(page, pageIndex: pageIndex)
     }
     
-    func generateImagePrompt() async throws -> String {
-        let results = langaugeService.findRelevantPassages()
+    func generateImagePrompt(currentPage: Int) async throws -> String {
+        let results = langaugeService.findRelevantPassages(currentPage: currentPage)
         let prompt = try await openAISerivce.generateImagePrompt(from: results)
         print(prompt)
         return prompt

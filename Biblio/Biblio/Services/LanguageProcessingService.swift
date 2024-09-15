@@ -17,71 +17,85 @@ struct LanguageProcessingService {
         self.vectorDB = try! SVDB.shared.collection(bookUID.uuidString)
     }
     
-    func processBook(_ bookContent: String) {
-        let sentences = splitIntoSentences(bookContent)
-        
-        for i in stride(from: 0, to: sentences.count, by: 3) {
-            let end = min(i + 3, sentences.count)
+    static let defaultSearchQuery = """
+             Describe the visual elements of the current scene in detail, including:
+             1. The physical setting (e.g., indoor/outdoor, urban/rural, specific location)
+             2. Time of day and lighting conditions
+             3. Colors, textures, and materials present
+             4. Notable objects or landmarks
+             6. Any atmospheric details (weather, mood, ambiance)
+             Focus on concrete, visual details that would be important for creating an illustration or image of the scene.
+        """
+    
+    
+    func processPage(_ pageContent: String, pageIndex: Int, passageLength: Int = 5, overlapSize: Int = 1) {
+        let sentences = splitIntoSentences(pageContent)
+        for i in stride(from: 0, to: sentences.count, by: passageLength - overlapSize) {
+            let end = min(i + passageLength, sentences.count)
             let passage = sentences[i..<end].joined(separator: " ")
             guard let embedding = embeddingModel.vector(for: passage) else {
-                print("failed to get embedding")
-                return
+                print("Failed to get embedding for passage")
+                continue
             }
-            vectorDB.addDocument(text: passage, embedding: embedding)
+            let indexedPassage = "[\(pageIndex)] \(passage)"
+            vectorDB.addDocument(text: indexedPassage, embedding: embedding)
         }
     }
     
     private func splitIntoSentences(_ text: String) -> [String] {
         let tokenizer = NLTokenizer(unit: .sentence)
         tokenizer.string = text
-        return tokenizer.tokens(for: text.startIndex..<text.endIndex).map { String(text[$0]) }
+        return tokenizer.tokens(for: text.startIndex..<text.endIndex).map { range in
+            let sentence = String(text[range])
+            let cleanedSentence = sentence
+                .trimmingCharacters(in: .whitespacesAndNewlines)
+                .replacingOccurrences(of: "\\s+", with: " ")
+           return cleanedSentence
+        }
     }
     
-    func findRelevantPassages(for query: String =
-        """
-             Describe the visual elements of the current scene in detail, including:
-             1. The physical setting (e.g., indoor/outdoor, urban/rural, specific location)
-             2. Time of day and lighting conditions
-             3. Colors, textures, and materials present
-             4. Notable objects or landmarks
-             5. Characters' appearances and positions
-             6. Any atmospheric details (weather, mood, ambiance)
-             Focus on concrete, visual details that would be important for creating an illustration or image of the scene.
-        """
-    ) -> [String] {
-        guard let queryEmbedding = embeddingModel.vector(for: query) else { return [] }
+    func findRelevantPassages(for query: String = defaultSearchQuery, currentPage: Int) -> [String] {
+        let queryWithPage = "[\(currentPage)] \(query)"
+        guard let queryEmbedding = embeddingModel.vector(for: queryWithPage) else { return [] }
+        let results = vectorDB.search(query: queryEmbedding, num_results: 20)
+        let output = rerank(results: results, currentPage: currentPage)
+        let topResults = output.prefix(10).map { $0 }
+        return topResults
+    }
+    
+    private func rerank(results: [SearchResult], currentPage: Int) -> [String] {
+        let scoredResults = results.map { result -> (text: String, score: Double) in
+            let pageMatch = extractPageNumber(from: result.text)
+            let distance = abs(currentPage - pageMatch)
+            let proximityScore = 1.0 / (1.0 + Float(distance))
+            
+            let weightSearch = 0.8
+            let weightProximity = 0.2
+            let combinedScore = (result.score * weightSearch) + (Double(proximityScore) * weightProximity)
+            return (result.text, combinedScore)
+        }
         
-        let results = vectorDB.search(query: queryEmbedding)
-        print(results)
-        return results.map { $0.text }
+        return scoredResults.sorted { $0.score > $1.score }.map {
+            let cleanedText = removePageIndex(from: $0.text)
+            return cleanedText
+        }
     }
-    //MARK: Rank content closer to the user higher
-    //MARK: TO DO Add a reranker
-    //    private func rerank(results: [SearchResult], query: String) -> [SearchResult] {
-    //        // Implement a more sophisticated re-ranking algorithm
-    //        // This is a simple example using BM25
-    //        let bm25 = BM25(k1: 1.5, b: 0.75)
-    //        return bm25.rank(documents: results.map { $0.text }, query: query)
-    //            .sorted { $0.score > $1.score }
-    //            .map { SearchResult(text: $0.document, score: $0.score) }
-    //    }
     
-    //    private func semanticFilter(passages: [SearchResult], query: String) -> [SearchResult] {
-    //        // Implement semantic filtering
-    //        // This is a simple example using cosine similarity
-    //        guard let queryEmbedding = embeddingModel.vector(for: query) else { return passages }
-    //
-    //        return passages.filter { passage in
-    //            guard let passageEmbedding = embeddingModel.vector(for: passage.text) else { return false }
-    //            let similarity = cosineSimilarity(queryEmbedding, passageEmbedding)
-    //            return similarity > 0.7 // Adjust threshold as needed
-    //        }
-    //    }
-    //
-    //    private func cosineSimilarity(_ v1: [Float], _ v2: [Float]) -> Float {
-    //        let dotProduct = zip(v1, v2).map(*).reduce(0, +)
-    //        let magnitude1 = sqrt(v1.map { $0 * $0 }.reduce(0, +))
-    //        let magnitude2 = sqrt(v2.map { $0 * $0 }.reduce(0, +))
-    //        return dotProduct / (magnitude1 * magnitude2)
-    //    }
+    private func removePageIndex(from text: String) -> String {
+       let pattern = "\\[\\d+\\]\\s*"
+       let regex = try! NSRegularExpression(pattern: pattern)
+       return regex.stringByReplacingMatches(in: text, range: NSRange(location: 0, length: text.utf16.count), withTemplate: "")
+    }
+
+    private func extractPageNumber(from text: String) -> Int {
+       let pattern = "\\[(\\d+)\\]"
+       let regex = try! NSRegularExpression(pattern: pattern)
+       let nsString = text as NSString
+       let results = regex.matches(in: text, range: NSRange(location: 0, length: nsString.length))
+       if let match = results.first {
+           let pageNumberString = nsString.substring(with: match.range(at: 1))
+           return Int(pageNumberString) ?? 0
+       }
+       return 0
+    }
 }

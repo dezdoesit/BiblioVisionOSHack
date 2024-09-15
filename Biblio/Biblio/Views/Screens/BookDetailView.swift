@@ -58,14 +58,20 @@ struct DocumentDetailView: View {
                         removal: .move(edge: .leading).combined(with: .opacity)
                     ))
                     .task(priority: .userInitiated) {
-                        guard let document = pdfViewModel.document, let text = document.string else {
+                        guard let document = pdfViewModel.document else {
                             print("Failed")
                             return
                         }
-                        ragViewModel.addNewPage(content: text)
+                        let pageCount = document.pageCount
+
+                        for i in 0 ..< pageCount {
+                            guard let page = document.page(at: i) else { continue }
+                            guard let pageContent = page.string else { continue }
+                            ragViewModel.addNewPage(content: pageContent, pageIndex: i)
+                        }
                         
                         do {
-                            let output = try await ragViewModel.generateImagePrompt()
+                            let output = try await ragViewModel.generateImagePrompt(currentPage: pageCount-1)
                         } catch {
                             print("Bruha")
                         }

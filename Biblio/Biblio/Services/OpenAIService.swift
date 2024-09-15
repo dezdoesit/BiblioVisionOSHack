@@ -12,7 +12,7 @@ struct OpenAIService {
     private let openAI = OpenAI(apiToken: Constants.openAIAPIKey)
     
     func generateImagePrompt(from passages: [String]) async throws -> String {
-        let combinedPassages = passages.joined(separator: "\n\n")
+        let combinedPassages = passages.joined(separator: " ")
         
         let systemPrompt = """
         You are an AI specialized in analyzing textual descriptions and converting them into detailed, vivid prompts for Skybox AI to generate immersive 3D environments. Your task is to create a prompt based on the given passages from a book, focusing on the visual and spatial elements described.
