@@ -1,5 +1,5 @@
 {
-  "originHash" : "c3eb9c02fee6e7ba3a010a2764bb44bcd600dec5b8a98bb3ef3723233bcfcf01",
+  "originHash" : "7885de002939bed68b89d65ea828f47137d9c6e2f3e95ab7e6a0e1363cb0c338",
   "pins" : [
     {
       "identity" : "aexml",
@@ -17,6 +17,24 @@
       "state" : {
         "revision" : "c8148577adc407ab1d4fcd45ceb58b54fb96b344",
         "version" : "0.4.0"
+      }
+    },
+    {
+      "identity" : "openai",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/MacPaw/OpenAI.git",
+      "state" : {
+        "revision" : "843e087929aa806adb611dbca93f9a4a7f28be04",
+        "version" : "0.3.0"
+      }
+    },
+    {
+      "identity" : "svdb",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/Dripfarm/SVDB",
+      "state" : {
+        "revision" : "01e78b8bb9423e40201db450180f731c9a67c554",
+        "version" : "2.0.0"
       }
     },
     {

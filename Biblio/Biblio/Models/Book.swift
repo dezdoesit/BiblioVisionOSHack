@@ -1,4 +1,5 @@
 import SwiftUI
+import PDFKit
 
 struct Book: Identifiable {
     let id = UUID()
