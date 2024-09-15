@@ -23,14 +23,7 @@ struct PDFBookService: BookServiceProtocol {
     
     func getBookContent() -> String? {
         guard let document = document else { return nil }
-        let documentContent = NSMutableAttributedString()
-        let pageCount = document.pageCount
-        for i in 0 ..< pageCount {
-            guard let page = document.page(at: i) else { continue }
-            guard let pageContent = page.attributedString else { continue }
-            documentContent.append(pageContent)
-        }
-        return documentContent.string
+        return document.string
     }
     
     func getBookTitle() -> String? {

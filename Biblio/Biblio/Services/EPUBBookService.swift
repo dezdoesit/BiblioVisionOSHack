@@ -43,7 +43,10 @@ struct EPUBBookService: BookServiceProtocol {
                let chapterURL = document.contentDirectory.appendingPathComponent(cleanPath(path)) as URL? {
                 do {
                     let chapterContent = try String(contentsOf: chapterURL, encoding: .utf8)
-                    allContent += chapterContent + "\n\n"
+                    guard let text = htmlToPlainText(chapterContent) else{
+                        continue
+                    }
+                    allContent += text + "\n\n"
                 } catch {
                     print("Error loading chapter: \(error)")
                 }
@@ -51,6 +54,27 @@ struct EPUBBookService: BookServiceProtocol {
         }
         return allContent
     }
+    
+    private func htmlToPlainText(_ html: String) -> String? {
+        guard let data = html.data(using: .utf8) else {
+            print("Failed to convert HTML string to Data")
+            return nil
+        }
+        
+        let options: [NSAttributedString.DocumentReadingOptionKey: Any] = [
+            .documentType: NSAttributedString.DocumentType.html,
+            .characterEncoding: String.Encoding.utf8.rawValue
+        ]
+        
+        do {
+            let attributedString = try NSAttributedString(data: data, options: options, documentAttributes: nil)
+            return attributedString.string
+        } catch {
+            print("Error parsing HTML data to NSAttributedString: \(error)")
+            return nil
+        }
+    }
+
     
     func getBookTitle() -> String? {
        return document?.title

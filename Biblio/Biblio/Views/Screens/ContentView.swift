@@ -13,6 +13,7 @@ struct ContentView: View {
     @State private var isFilePickerPresented = false
     @State private var searchText = ""
     @Environment(\.openWindow) private var openWindow
+    @Environment(\.dismissWindow) private var dismissWindow
 
     var filteredBooks: [Book] {
         if searchText.isEmpty {
@@ -97,6 +98,7 @@ struct ContentView: View {
 
     private func openBookDetailWindow(book: Book) {
         print("Opening window for book: \(book.id)")
+        dismissWindow()
         openWindow(id: "bookDetail", value: book.id)
     }
 }
