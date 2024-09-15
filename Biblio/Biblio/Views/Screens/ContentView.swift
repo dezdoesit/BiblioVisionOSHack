@@ -9,10 +9,10 @@ import SwiftUI
 import UniformTypeIdentifiers
 
 struct ContentView: View {
-    @State var books: [Book] = []
+    @EnvironmentObject var bookStore: BookStore
     @State private var isFilePickerPresented = false
-    @State private var selectedBook: Book?
     @State private var searchText = ""
+    @Environment(\.openWindow) private var openWindow
 
     var body: some View {
         VStack(spacing: 20) {
@@ -43,15 +43,13 @@ struct ContentView: View {
             .cornerRadius(40)
             .padding(.horizontal)
 
-
             // Horizontal scroll view for books
             ScrollView(.horizontal, showsIndicators: false) {
                 LazyHStack(spacing: 25) {
-                    ForEach(books) { book in
-                        BookCardView(book: book)
-                            {
-                                selectedBook = book
-                            }
+                    ForEach(bookStore.books) { book in
+                        BookCardView(book: book) {
+                            openBookDetailWindow(book: book)
+                        }
                     }
                 }
                 .padding(.horizontal)
@@ -67,10 +65,6 @@ struct ContentView: View {
                 Label("Add Book", systemImage: "plus")
             }
             .padding()
-
-        }
-        .sheet(item: $selectedBook) { book in
-            DocumentDetailView(book: book)
         }
         .fileImporter(
             isPresented: $isFilePickerPresented,
@@ -82,15 +76,22 @@ struct ContentView: View {
                 for fileURL in fileURLs {
                     let bookmarkData = try fileURL.bookmarkData(options: .minimalBookmark, includingResourceValuesForKeys: nil, relativeTo: nil)
                     let book = Book(bookmarkData: bookmarkData)
-                    books.append(book)
+                    bookStore.books.append(book)
                 }
             } catch {
                 print("Error importing files: \(error)")
             }
         }
         .onAppear {
-            loadSampleBooks()
+            if bookStore.books.isEmpty {
+                           bookStore.loadSampleBooks()
+                       }
         }
+    }
+
+    private func openBookDetailWindow(book: Book) {
+        print("Opening window for book: \(book.id)")
+        openWindow(id: "bookDetail", value: book.id)
     }
 }
 
