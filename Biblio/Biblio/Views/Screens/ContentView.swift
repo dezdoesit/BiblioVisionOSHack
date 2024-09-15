@@ -14,9 +14,17 @@ struct ContentView: View {
     @State private var searchText = ""
     @Environment(\.openWindow) private var openWindow
 
+    var filteredBooks: [Book] {
+        if searchText.isEmpty {
+            return bookStore.books
+        } else {
+            return bookStore.books.filter { $0.name.lowercased().contains(searchText.lowercased()) }
+        }
+    }
+
     var body: some View {
         VStack(spacing: 20) {
-            // Navigation bar with title and profile
+            // Navigation bar with title
             HStack {
                 Text("Books")
                     .font(.largeTitle)
@@ -46,7 +54,7 @@ struct ContentView: View {
             // Horizontal scroll view for books
             ScrollView(.horizontal, showsIndicators: false) {
                 LazyHStack(spacing: 25) {
-                    ForEach(bookStore.books) { book in
+                    ForEach(filteredBooks) { book in
                         BookCardView(book: book) {
                             openBookDetailWindow(book: book)
                         }
@@ -74,9 +82,7 @@ struct ContentView: View {
             do {
                 let fileURLs = try result.get()
                 for fileURL in fileURLs {
-                    let bookmarkData = try fileURL.bookmarkData(options: .minimalBookmark, includingResourceValuesForKeys: nil, relativeTo: nil)
-                    let book = Book(bookmarkData: bookmarkData)
-                    bookStore.books.append(book)
+                    bookStore.addBook(url: fileURL)
                 }
             } catch {
                 print("Error importing files: \(error)")
@@ -84,8 +90,8 @@ struct ContentView: View {
         }
         .onAppear {
             if bookStore.books.isEmpty {
-                           bookStore.loadSampleBooks()
-                       }
+                bookStore.loadSampleBooks()
+            }
         }
     }
 
@@ -94,7 +100,6 @@ struct ContentView: View {
         openWindow(id: "bookDetail", value: book.id)
     }
 }
-
 #Preview(windowStyle: .automatic) {
     ContentView()
         .environment(AppModel())
