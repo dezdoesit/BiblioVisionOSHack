@@ -1,59 +1,53 @@
 //
-//  PDFViewModel.swift
+//  PDFBookService.swift
 //  Biblio
 //
-//  Created by Joanna Owczarek on 14/09/2024.
+//  Created by Joanna Owczarek on 15/09/2024.
 //
 
 import Foundation
-import SwiftUI
 import PDFKit
 
-// MARK: - Chapter Model
-struct Chapter: Equatable, Hashable {
-    let name: String
-    let page: Int
+struct PDFBookService: BookServiceProtocol {
+    let book: Book
     
-    static func == (lhs: Chapter, rhs: Chapter) -> Bool {
-        return lhs.name == rhs.name && lhs.page == rhs.page
+    init(book: Book) {
+        self.book = book
     }
     
-    func hash(into hasher: inout Hasher) {
-        hasher.combine(name)
-        hasher.combine(page)
-    }
-}
-
-// MARK: - ViewModel
-class PDFViewModel: ObservableObject {
-    @Published var chapters: [Chapter] = []
-    @Published var selectedChapter: Chapter?
-    @Published var url: URL?
-    @Published var currentPage: Int = 1
-    @Published var totalPages: Int = 1
-    @Published var document: PDFDocument? = nil
-
-    init(url: URL?) {
-        self.url = url
-        loadDocument()
+    var document: PDFDocument? {
+        guard let url = book.fileURL else { return nil }
+        guard let document = PDFDocument(url: url) else { return nil }
+        return document
     }
     
-    func loadDocument() {
-            guard let url = url else { return }
-            guard let document = PDFDocument(url: url) else {
-                print("Failed to load PDF document from URL: \(url)")
-                return
-            }
-        self.document = document
-            extractChapters(document: document)
-            totalPages = document.pageCount
+    func getBookContent() -> String? {
+        guard let document = document else { return nil }
+        let documentContent = NSMutableAttributedString()
+        let pageCount = document.pageCount
+        for i in 0 ..< pageCount {
+            guard let page = document.page(at: i) else { continue }
+            guard let pageContent = page.attributedString else { continue }
+            documentContent.append(pageContent)
+        }
+        return documentContent.string
     }
     
-    private func extractChapters(document: PDFDocument) {
-        if let extractedChapters = extractChaptersFromTOC(document: document) {
-            chapters = extractedChapters
+    func getBookTitle() -> String? {
+        guard let document = document else { return nil }
+        if let title = document.documentAttributes?[PDFDocumentAttribute.titleAttribute] as? String {
+            return title
         } else {
-            chapters = extractChaptersFromText(document: document)
+            return book.name
+        }
+    }
+    
+    func getChapters() -> [String] {
+        guard let document = document else { return [] }
+        if let extractedChapters = extractChaptersFromTOC(document: document) {
+            return extractedChapters.map { $0.name }
+        } else {
+            return extractChaptersFromText(document: document).map { $0.name }
         }
     }
     
