@@ -109,10 +109,10 @@
 			isa = PBXGroup;
 			children = (
 				4C8100122C950A4E001BBA9F /* Biblio */,
-				50D2DE8F2C96D879002BE06E /* New Group */,
 				4C8100132C950A4E001BBA9F /* Packages */,
 				4C8100112C950A4E001BBA9F /* Products */,
 				4C8100562C9747F6001BBA9F /* Recovered References */,
+				50612A962C97836F00B5EEE5 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -200,6 +200,13 @@
 			path = PDF;
 			sourceTree = "<group>";
 		};
+		50612A962C97836F00B5EEE5 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		50A4F3BE2C958CA200FCC99F /* Components */ = {
 			isa = PBXGroup;
 			children = (
@@ -230,13 +237,6 @@
 				50A4F3C92C95BB5E00FCC99F /* EPUBKitView.swift */,
 			);
 			path = EPUB;
-			sourceTree = "<group>";
-		};
-		50D2DE8F2C96D879002BE06E /* New Group */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = "New Group";
 			sourceTree = "<group>";
 		};
 		50D2DE902C96D882002BE06E /* Services */ = {
