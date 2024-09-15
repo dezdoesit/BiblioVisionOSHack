@@ -6,7 +6,6 @@ struct DocumentDetailView: View {
     let book: Book
 
     @State private var currentPage: Int = 1
-    @Environment(\.dismiss) private var dismiss
 
     init(book: Book) {
         self.book = book

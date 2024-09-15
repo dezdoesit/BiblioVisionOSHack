@@ -9,15 +9,22 @@ import SwiftUI
 
 @main
 struct BiblioApp: App {
-
+    @StateObject private var bookStore = BookStore()
     @State private var appModel = AppModel()
 
     var body: some Scene {
         WindowGroup {
             ContentView()
                 .environment(appModel)
+                .environmentObject(bookStore)
         }
 
+        WindowGroup(id: "bookDetail", for: UUID.self) { $bookID in
+                   BookDetailWindow()
+                       .environmentObject(bookStore)
+                       .environment(\.bookID, $bookID.wrappedValue)
+               }
+        
         ImmersiveSpace(id: appModel.immersiveSpaceID) {
             ImmersiveView()
                 .environment(appModel)
@@ -29,5 +36,5 @@ struct BiblioApp: App {
                 }
         }
         .immersionStyle(selection: .constant(.mixed), in: .mixed)
-     }
+    }
 }
