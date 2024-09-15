@@ -4,7 +4,6 @@ struct DocumentDetailView: View {
     let book: Book
     @StateObject private var viewModel: PDFViewModel
     @State private var currentPage: Int = 1
-    @Environment(\.dismiss) private var dismiss
 
     init(book: Book) {
         self.book = book
@@ -13,24 +12,6 @@ struct DocumentDetailView: View {
 
     var body: some View {
         VStack {
-            HStack {
-                Button(action: {
-                    dismiss()
-                }) {
-                    HStack {
-                        Image(systemName: "chevron.left")
-                            .foregroundColor(.blue)
-                        Text("Back")
-                            .foregroundColor(.blue)
-                    }
-                    .padding()
-                    .background(Color.white.opacity(0.1))
-                    .cornerRadius(15)
-                }
-                .padding()
-                Spacer()
-            }
-
             switch book.type {
             case .pdf:
                 PDFKitView(viewModel: viewModel, currentPage: $currentPage)
@@ -61,14 +42,6 @@ struct DocumentDetailView: View {
                 Text("Unsupported file type")
             }
         }
-        .navigationBarHidden(true)
-        .gesture(
-            DragGesture()
-                .onEnded { gesture in
-                    if gesture.translation.height > 50 {
-                        dismiss()
-                    }
-                }
-        )
+        .navigationTitle(book.name)
     }
 }
