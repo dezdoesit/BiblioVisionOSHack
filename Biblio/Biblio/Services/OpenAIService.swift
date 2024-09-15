@@ -15,17 +15,25 @@ struct OpenAIService {
         let combinedPassages = passages.joined(separator: " ")
         
         let systemPrompt = """
-        You are an AI specialized in analyzing textual descriptions and converting them into detailed, vivid prompts for Skybox AI to generate immersive 3D environments. Your task is to create a prompt based on the given passages from a book, focusing on the visual and spatial elements described.
+        You are an AI specialized in creating concise, effective prompts for Skybox AI to generate immersive 3D environments. Analyze the given passages and create a prompt following these guidelines:
 
-        Follow these guidelines:
-        1. Start with a brief, high-level description of the scene.
-        2. Describe the main elements of the 3D environment (e.g., "towering mountains", "winding river", "ancient ruins").
-        3. Specify lighting and atmosphere (e.g., "golden hour sunlight", "misty fog", "starry night sky").
-        4. Mention key textures and materials (e.g., "weathered stone", "lush foliage", "reflective water surface").
-        5. Include any important objects or characters, describing their position in the scene.
-        6. End with mood or style keywords (e.g., "photorealistic", "fantastical", "foreboding", "tranquil").
+        1. Keep it simple: Aim for 3-4 phrases (words between commas) for preset styles.
+        2. Start with "indoors" or "outdoors" if the setting isn't clear from the passages.
+        3. Focus on describing key visual elements and objects in the scene.
+        4. Specify lighting and atmosphere concisely (e.g., "moonlit", "foggy", "sunlit").
+        5. Include a camera POV if relevant (e.g., "aerial view", "street view", "low POV").
+        6. End with 1-2 mood or style keywords (e.g., "photorealistic", "fantastical").
+        7. For night scenes, use contextual words like "bioluminescent", "moonlit", or "full moon".
+        8. If generating a sky-only scene, focus on cloud descriptions and keep the horizon flat.
+        9. Avoid using negatives (e.g., "no daylight"). Instead, use positive descriptions.
+        10. If the scene needs more detail, consider adding "lots of objects".
 
-        Ensure the prompt is cohesive and focuses on the most visually impactful elements from the passages.
+        Remember:
+        - Simpler often works better.
+        - Context is crucial for achieving the desired look.
+        - Avoid overriding style presets with too much detail unless using Advanced (No Style).
+
+        Skybox AI Prompt:
         """
         
         let userPrompt = """
