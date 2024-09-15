@@ -29,19 +29,23 @@ class PDFViewModel: ObservableObject {
     @Published var chapters: [Chapter] = []
     @Published var selectedChapter: Chapter?
     @Published var url: URL?
-    
+    @Published var currentPage: Int = 1
+    @Published var totalPages: Int = 1
+
+
     init(url: URL?) {
         self.url = url
         loadDocument()
     }
     
     func loadDocument() {
-        guard let url = url else { return }
-        guard let document = PDFDocument(url: url) else {
-            print("Failed to load PDF document from URL: \(url)")
-            return
-        }
-        extractChapters(document: document)
+            guard let url = url else { return }
+            guard let document = PDFDocument(url: url) else {
+                print("Failed to load PDF document from URL: \(url)")
+                return
+            }
+            extractChapters(document: document)
+            totalPages = document.pageCount
     }
     
     private func extractChapters(document: PDFDocument) {

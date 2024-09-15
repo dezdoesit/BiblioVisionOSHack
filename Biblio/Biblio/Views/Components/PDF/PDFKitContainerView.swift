@@ -19,7 +19,7 @@ struct PDFKitContainerView: View {
             }
             .navigationTitle("Chapters")
         } detail: {
-            PDFKitView(viewModel: viewModel).id(viewModel.url)
+            PDFKitView(viewModel: viewModel, currentPage: $viewModel.currentPage).id(viewModel.url)
         }
     }
 }
