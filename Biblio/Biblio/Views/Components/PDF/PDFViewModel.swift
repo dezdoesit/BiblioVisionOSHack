@@ -31,7 +31,7 @@ class PDFViewModel: ObservableObject {
     @Published var url: URL?
     @Published var currentPage: Int = 1
     @Published var totalPages: Int = 1
-
+    @Published var document: PDFDocument? = nil
 
     init(url: URL?) {
         self.url = url
@@ -44,6 +44,7 @@ class PDFViewModel: ObservableObject {
                 print("Failed to load PDF document from URL: \(url)")
                 return
             }
+        self.document = document
             extractChapters(document: document)
             totalPages = document.pageCount
     }

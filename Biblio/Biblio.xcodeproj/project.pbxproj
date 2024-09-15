@@ -32,6 +32,12 @@
 		50A4F3C82C95BB2100FCC99F /* EPUBChapterContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50A4F3C72C95BB2100FCC99F /* EPUBChapterContentView.swift */; };
 		50A4F3CA2C95BB5E00FCC99F /* EPUBKitView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50A4F3C92C95BB5E00FCC99F /* EPUBKitView.swift */; };
 		50A4F3CC2C95DA8800FCC99F /* sample5.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 50A4F3CB2C95DA8800FCC99F /* sample5.pdf */; };
+		50D2DE932C96D8BA002BE06E /* LanguageProcessingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50D2DE922C96D8BA002BE06E /* LanguageProcessingService.swift */; };
+		50D2DE952C96D968002BE06E /* RAGViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50D2DE942C96D968002BE06E /* RAGViewModel.swift */; };
+		50D2DE982C96D9D1002BE06E /* OpenAI in Frameworks */ = {isa = PBXBuildFile; productRef = 50D2DE972C96D9D1002BE06E /* OpenAI */; };
+		50D2DE9B2C96D9EF002BE06E /* SVDB in Frameworks */ = {isa = PBXBuildFile; productRef = 50D2DE9A2C96D9EF002BE06E /* SVDB */; };
+		50D2DE9D2C96DB05002BE06E /* OpenAIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50D2DE9C2C96DB05002BE06E /* OpenAIService.swift */; };
+		50D2DEA12C96EAF4002BE06E /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50D2DEA02C96EAF4002BE06E /* Constants.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -61,6 +67,10 @@
 		50A4F3C72C95BB2100FCC99F /* EPUBChapterContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EPUBChapterContentView.swift; sourceTree = "<group>"; };
 		50A4F3C92C95BB5E00FCC99F /* EPUBKitView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EPUBKitView.swift; sourceTree = "<group>"; };
 		50A4F3CB2C95DA8800FCC99F /* sample5.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = sample5.pdf; sourceTree = "<group>"; };
+		50D2DE922C96D8BA002BE06E /* LanguageProcessingService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LanguageProcessingService.swift; sourceTree = "<group>"; };
+		50D2DE942C96D968002BE06E /* RAGViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RAGViewModel.swift; sourceTree = "<group>"; };
+		50D2DE9C2C96DB05002BE06E /* OpenAIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenAIService.swift; sourceTree = "<group>"; };
+		50D2DEA02C96EAF4002BE06E /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -69,7 +79,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				4C8100162C950A4E001BBA9F /* RealityKitContent in Frameworks */,
+				50D2DE982C96D9D1002BE06E /* OpenAI in Frameworks */,
 				50A4F3BD2C958C2400FCC99F /* EPUBKit in Frameworks */,
+				50D2DE9B2C96D9EF002BE06E /* SVDB in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -80,6 +92,7 @@
 			isa = PBXGroup;
 			children = (
 				4C8100122C950A4E001BBA9F /* Biblio */,
+				50D2DE8F2C96D879002BE06E /* New Group */,
 				4C8100132C950A4E001BBA9F /* Packages */,
 				4C8100112C950A4E001BBA9F /* Products */,
 			);
@@ -98,6 +111,8 @@
 			children = (
 				4C81002E2C950D63001BBA9F /* Views */,
 				4C81002D2C950CD9001BBA9F /* Models */,
+				50D2DE912C96D89B002BE06E /* ViewModels */,
+				50D2DE902C96D882002BE06E /* Services */,
 				4C8100212C950A4F001BBA9F /* Assets.xcassets */,
 				4C81003D2C955382001BBA9F /* sample2.epub */,
 				4C81003F2C9553CA001BBA9F /* sample4.epub */,
@@ -172,8 +187,8 @@
 			isa = PBXGroup;
 			children = (
 				4C8100192C950A4E001BBA9F /* ContentView.swift */,
-				4C8100332C951F06001BBA9F /* BookDetailView.swift */,
 				4C81001F2C950A4E001BBA9F /* ImmersiveView.swift */,
+				4C8100332C951F06001BBA9F /* BookDetailView.swift */,
 			);
 			path = Screens;
 			sourceTree = "<group>";
@@ -186,6 +201,31 @@
 				50A4F3C92C95BB5E00FCC99F /* EPUBKitView.swift */,
 			);
 			path = EPUB;
+			sourceTree = "<group>";
+		};
+		50D2DE8F2C96D879002BE06E /* New Group */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = "New Group";
+			sourceTree = "<group>";
+		};
+		50D2DE902C96D882002BE06E /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				50D2DE922C96D8BA002BE06E /* LanguageProcessingService.swift */,
+				50D2DE9C2C96DB05002BE06E /* OpenAIService.swift */,
+				50D2DEA02C96EAF4002BE06E /* Constants.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+		50D2DE912C96D89B002BE06E /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+				50D2DE942C96D968002BE06E /* RAGViewModel.swift */,
+			);
+			path = ViewModels;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -207,6 +247,8 @@
 			packageProductDependencies = (
 				4C8100152C950A4E001BBA9F /* RealityKitContent */,
 				50A4F3BC2C958C2400FCC99F /* EPUBKit */,
+				50D2DE972C96D9D1002BE06E /* OpenAI */,
+				50D2DE9A2C96D9EF002BE06E /* SVDB */,
 			);
 			productName = Biblio;
 			productReference = 4C8100102C950A4E001BBA9F /* Biblio.app */;
@@ -238,6 +280,8 @@
 			mainGroup = 4C8100072C950A4E001BBA9F;
 			packageReferences = (
 				50A4F3BB2C958C2400FCC99F /* XCRemoteSwiftPackageReference "EPUBKit" */,
+				50D2DE962C96D9D1002BE06E /* XCRemoteSwiftPackageReference "OpenAI" */,
+				50D2DE992C96D9EF002BE06E /* XCRemoteSwiftPackageReference "SVDB" */,
 			);
 			productRefGroup = 4C8100112C950A4E001BBA9F /* Products */;
 			projectDirPath = "";
@@ -275,16 +319,20 @@
 				50A4F3C12C958D2C00FCC99F /* PDFKitContainerView.swift in Sources */,
 				50A4F3C82C95BB2100FCC99F /* EPUBChapterContentView.swift in Sources */,
 				4C81001A2C950A4E001BBA9F /* ContentView.swift in Sources */,
+				50D2DE9D2C96DB05002BE06E /* OpenAIService.swift in Sources */,
 				4C8100302C951E8B001BBA9F /* Book.swift in Sources */,
 				4C8100382C954CA4001BBA9F /* SampleBooks.swift in Sources */,
+				50D2DE952C96D968002BE06E /* RAGViewModel.swift in Sources */,
 				4C8100202C950A4E001BBA9F /* ImmersiveView.swift in Sources */,
 				503678C72C95FB7C00F9ED4F /* PDFKitView.swift in Sources */,
 				4C81001C2C950A4E001BBA9F /* AppModel.swift in Sources */,
 				4C8100182C950A4E001BBA9F /* BiblioApp.swift in Sources */,
 				50A4F3BA2C958A4D00FCC99F /* BookType.swift in Sources */,
 				503678C52C95FAFF00F9ED4F /* PDFViewModel.swift in Sources */,
+				50D2DEA12C96EAF4002BE06E /* Constants.swift in Sources */,
 				4C8100322C951EEC001BBA9F /* BookRow.swift in Sources */,
 				50A4F3C62C95BAF200FCC99F /* EPUBManager.swift in Sources */,
+				50D2DE932C96D8BA002BE06E /* LanguageProcessingService.swift in Sources */,
 				50A4F3CA2C95BB5E00FCC99F /* EPUBKitView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -495,6 +543,22 @@
 				minimumVersion = 0.4.0;
 			};
 		};
+		50D2DE962C96D9D1002BE06E /* XCRemoteSwiftPackageReference "OpenAI" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/MacPaw/OpenAI.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.3.0;
+			};
+		};
+		50D2DE992C96D9EF002BE06E /* XCRemoteSwiftPackageReference "SVDB" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Dripfarm/SVDB";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.0.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -506,6 +570,16 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 50A4F3BB2C958C2400FCC99F /* XCRemoteSwiftPackageReference "EPUBKit" */;
 			productName = EPUBKit;
+		};
+		50D2DE972C96D9D1002BE06E /* OpenAI */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 50D2DE962C96D9D1002BE06E /* XCRemoteSwiftPackageReference "OpenAI" */;
+			productName = OpenAI;
+		};
+		50D2DE9A2C96D9EF002BE06E /* SVDB */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 50D2DE992C96D9EF002BE06E /* XCRemoteSwiftPackageReference "SVDB" */;
+			productName = SVDB;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
